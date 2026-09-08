@@ -54,9 +54,9 @@ func (hdlr handler) Signup(c *gin.Context) {
 	)
 }
 
-func (hdlr handler) Login(c *gin.Context) {
-
+func (hdlr *handler) Login(c *gin.Context) {
 	var cred LoginModel
+
 	const sessionDuration = 30 * 24 * time.Hour
 
 	if err := c.ShouldBindJSON(&cred); err != nil {
@@ -69,15 +69,19 @@ func (hdlr handler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := hdlr.srv.Login(c.Request.Context(), cred.Email, cred.Password)
+	token, err := hdlr.srv.Login(
+		c.Request.Context(),
+		cred.Email,
+		cred.Password,
+	)
 	if err != nil {
-		response.Success(
+		response.Error(
 			c.Writer,
-			true,
-			http.StatusInternalServerError,
-			nil,
-			"Unexpected error occured",
+			false,
+			http.StatusUnauthorized,
+			"Invalid email or password"+err.Error(),
 		)
+		return
 	}
 
 	c.SetCookie(
@@ -93,8 +97,8 @@ func (hdlr handler) Login(c *gin.Context) {
 	response.Success(
 		c.Writer,
 		true,
-		http.StatusCreated,
+		http.StatusOK,
 		nil,
-		"Login successfull",
+		"Login successful",
 	)
 }
