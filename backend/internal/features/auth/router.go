@@ -27,4 +27,5 @@ func (rtr *Router) Register(reg *gin.RouterGroup) {
 
 	reg.POST("/signup", handler.Signup)
 	reg.POST("/login", handler.Login)
+	reg.GET("/me", handler.MeAuthorization)
 }

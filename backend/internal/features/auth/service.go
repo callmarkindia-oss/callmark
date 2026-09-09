@@ -11,6 +11,7 @@ import (
 type Service interface {
 	Signup(ctx context.Context, creds CredModel) (CredModel, error)
 	Login(ctx context.Context, email string, password string) (string, error)
+	ME(ctx context.Context, token string) (MeModal, error)
 }
 
 type service struct {
@@ -85,4 +86,14 @@ func (srv *service) Login(ctx context.Context, email string, password string) (s
 	}
 
 	return token, nil
+}
+
+func (srv *service) ME(ctx context.Context, token string) (MeModal, error) {
+
+	tokenHash, err := hashing.NewAlgo().CreateSHA(token)
+	if err != nil {
+		return MeModal{}, err
+	}
+
+	return srv.repo.ME(ctx, tokenHash)
 }
