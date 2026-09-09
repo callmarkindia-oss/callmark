@@ -102,3 +102,38 @@ func (hdlr *handler) Login(c *gin.Context) {
 		"Login successful",
 	)
 }
+
+func (hdlr *handler) MeAuthorization(c *gin.Context) {
+
+	token, err := c.Cookie("session_token")
+	if err != nil {
+		response.Success(
+			c.Writer,
+			false,
+			http.StatusUnauthorized,
+			nil,
+			"Sesssion not found",
+		)
+		return
+	}
+
+	result, err := hdlr.srv.ME(c.Request.Context(), token)
+	if err != nil {
+		response.Success(
+			c.Writer,
+			false,
+			http.StatusUnauthorized,
+			nil,
+			"Invalid session",
+		)
+		return
+	}
+
+	response.Success(
+		c.Writer,
+		true,
+		http.StatusOK,
+		result,
+		"Authorization successful",
+	)
+}

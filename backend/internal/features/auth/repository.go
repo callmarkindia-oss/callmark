@@ -9,6 +9,7 @@ type Repository interface {
 	Signup(ctx context.Context, creds CredModel) (CredModel, error)
 	Login(ctx context.Context, email string) (LoginModel, error)
 	CreateSession(ctx context.Context, session SessionModel) (SessionModel, error)
+	ME(ctx context.Context, token string) (MeModal, error)
 }
 
 type repository struct {
@@ -68,4 +69,35 @@ func (repo *repository) CreateSession(ctx context.Context, session SessionModel)
 	)
 
 	return session, err
+}
+
+func (repo *repository) ME(ctx context.Context, token string) (MeModal, error) {
+
+	var user UserModel
+	var expiry SessionExpireModel
+
+	err := repo.db.QueryRowContext(
+		ctx,
+		MeQuery,
+		token,
+	).Scan(
+		&user.ID,
+		&user.Fname,
+		&user.Lname,
+		&user.Phonenumber,
+		&user.Email,
+		&expiry.ExpiresAt,
+	)
+	if err != nil {
+		return MeModal{
+			Authenticated: false,
+		}, err
+	}
+
+	return MeModal{
+		Authenticated: true,
+		User:          user,
+		Session:       expiry,
+	}, nil
+
 }
