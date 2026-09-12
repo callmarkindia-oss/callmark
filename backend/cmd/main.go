@@ -1,16 +1,15 @@
 package main
 
 import (
-	// "fmt"
 	"log"
 	"os"
-
-	//"time"
 
 	"github.com/DeveloperAromal/callmark/pkg/banner"
 	"github.com/DeveloperAromal/callmark/pkg/logger"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+
+	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
 
 	databseAdapter "github.com/DeveloperAromal/callmark/internal/adapters/postgresql"
 )
@@ -56,8 +55,9 @@ func main() {
 	// }()
 
 	api := application{
-		config: cfg,
-		db:     conn,
+		config:     cfg,
+		db:         conn,
+		authModule: authModule.NewRepository(conn),
 	}
 
 	r := api.mount()

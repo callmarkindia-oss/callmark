@@ -11,15 +11,16 @@ import (
 	"github.com/gin-gonic/gin"
 
 	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
-
+	tagModule "github.com/DeveloperAromal/callmark/internal/features/tag"
 	routers "github.com/DeveloperAromal/callmark/internal/interfaces"
 )
 
 var startTime time.Time
 
 type application struct {
-	config config
-	db     *sql.DB
+	config     config
+	db         *sql.DB
+	authModule authModule.Repository
 }
 
 func (app *application) mount() *gin.Engine {
@@ -67,6 +68,7 @@ func (app *application) mount() *gin.Engine {
 
 	modules := []routers.RouterInterface{
 		authModule.NewRouter(app.db),
+		tagModule.NewRouter(app.db, app.authModule),
 	}
 
 	for _, m := range modules {
