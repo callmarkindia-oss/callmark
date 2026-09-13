@@ -29,4 +29,5 @@ func (rtr *Router) Register(reg *gin.RouterGroup) {
 	handler := NewHandler(service)
 
 	reg.POST("", handler.CreateNewTag)
+	reg.GET("", handler.GetAllTags)
 }

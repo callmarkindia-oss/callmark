@@ -7,6 +7,7 @@ import (
 
 type Repository interface {
 	CreateTag(ctx context.Context, tag TagModel) (TagModel, error)
+	GetAllTags(ctx context.Context, user_id string) ([]TagModel, error)
 }
 
 type repository struct {
@@ -35,4 +36,45 @@ func (repo *repository) CreateTag(ctx context.Context, tag TagModel) (TagModel, 
 	)
 
 	return tag, err
+}
+
+func (repo *repository) GetAllTags(ctx context.Context, user_id string) ([]TagModel, error) {
+
+	rows, err := repo.db.QueryContext(
+		ctx,
+		AllTagFetchQuery,
+		user_id,
+	)
+	if err != nil {
+		return []TagModel{}, err
+	}
+	defer rows.Close()
+
+	var tags []TagModel
+
+	for rows.Next() {
+
+		var tag TagModel
+
+		err := rows.Scan(
+			&tag.ID,
+			&tag.TagType,
+			&tag.TagToken,
+			&tag.Identifier,
+			&tag.IsActive,
+			&tag.CreatedAt,
+			&tag.ExpiryAt,
+		)
+		if err != nil {
+			return []TagModel{}, err
+		}
+
+		tags = append(tags, tag)
+	}
+
+	if err := rows.Err(); err != nil {
+		return []TagModel{}, err
+	}
+
+	return tags, err
 }

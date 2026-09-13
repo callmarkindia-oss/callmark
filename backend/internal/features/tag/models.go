@@ -10,10 +10,12 @@ const (
 )
 
 type TagModel struct {
-	ID         string    `json:"id" db:"id"`
-	UserID     string    `json:"user_id" db:"user_id"`
-	Identifier string    `json:"identifier" db:"identifier"`
-	TagToken   string    `json:"tag_token" db:"tag_token"`
-	TagType    TagType   `json:"tag_type" db:"tag_type"`
-	CreatedAt  time.Time `json:"created_at" db:"created_at"`
+	ID         string     `json:"id" db:"id"`
+	UserID     string     `json:"user_id" db:"user_id"`
+	Identifier string     `json:"identifier" db:"identifier"`
+	TagToken   string     `json:"tag_token" db:"tag_token"`
+	TagType    TagType    `json:"tag_type" db:"tag_type"`
+	IsActive   bool       `json:"is_active" db:"is_active"`
+	ExpiryAt   *time.Time `json:"expiry_at,omitempty" db:"expiry_at"`
+	CreatedAt  time.Time  `json:"created_at" db:"created_at"`
 }
