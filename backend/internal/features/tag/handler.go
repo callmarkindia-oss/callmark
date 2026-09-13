@@ -52,7 +52,7 @@ func (hdlr handler) CreateNewTag(c *gin.Context) {
 			true,
 			http.StatusInternalServerError,
 			nil,
-			"Unexpected error occured"+err.Error(),
+			"Unexpected error occured",
 		)
 		return
 	}
@@ -63,5 +63,40 @@ func (hdlr handler) CreateNewTag(c *gin.Context) {
 		http.StatusCreated,
 		result,
 		"Successfully created tag",
+	)
+}
+
+func (hdlr handler) GetAllTags(c *gin.Context) {
+
+	token, err := c.Cookie("session_token")
+	if err != nil {
+		response.Success(
+			c.Writer,
+			false,
+			http.StatusUnauthorized,
+			nil,
+			"Sesssion not found",
+		)
+		return
+	}
+
+	result, err := hdlr.srv.GetAllTags(c.Request.Context(), token)
+	if err != nil {
+		response.Success(
+			c.Writer,
+			true,
+			http.StatusInternalServerError,
+			nil,
+			"Unexpected error occured",
+		)
+		return
+	}
+
+	response.Success(
+		c.Writer,
+		true,
+		http.StatusCreated,
+		result,
+		"Successfully fetched tag",
 	)
 }

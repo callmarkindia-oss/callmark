@@ -79,7 +79,7 @@ func (hdlr *handler) Login(c *gin.Context) {
 			c.Writer,
 			false,
 			http.StatusUnauthorized,
-			"Invalid email or password"+err.Error(),
+			"Invalid email or password",
 		)
 		return
 	}
