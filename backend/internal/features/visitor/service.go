@@ -9,6 +9,8 @@ import (
 type Service interface {
 	CreateNewSMS(ctx context.Context, message string, tagToken string) (MessageModel, error)
 	CreateNewWhatsappMessage(ctx context.Context, message string, tagToken string) (MessageModel, error)
+	GetVoiceToken(ctx context.Context, tagToken string) (string, error)
+	GetVoiceResponse(ctx context.Context, tagToken string) (string, error)
 }
 
 type service struct {
@@ -49,4 +51,23 @@ func (srv *service) CreateNewWhatsappMessage(ctx context.Context, message string
 	}
 
 	return srv.repo.CreateWhatsappMessage(ctx, message, tagToken)
+}
+
+func (srv *service) GetVoiceToken(ctx context.Context, tagToken string) (string, error) {
+
+	_, err := srv.repo.GetPhonenumberFromTagToken(ctx, tagToken)
+	if err != nil {
+		return "", err
+	}
+
+	return twilio.NewMessage().CreateVoiceAccessToken(tagToken)
+}
+
+func (srv *service) GetVoiceResponse(ctx context.Context, tagToken string) (string, error) {
+	phno, err := srv.repo.GetPhonenumberFromTagToken(ctx, tagToken)
+	if err != nil {
+		return "", err
+	}
+
+	return createVoiceTwiML(phno)
 }
