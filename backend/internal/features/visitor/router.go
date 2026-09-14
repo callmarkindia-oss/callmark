@@ -26,4 +26,5 @@ func (rtr *Router) Register(reg *gin.RouterGroup) {
 	handler := NewHandler(service)
 
 	reg.POST("/sms/:tagToken", handler.CreateNewSMS)
+	reg.POST("/whatsapp/:tagToken", handler.CreateNewWhatsappMessage)
 }
