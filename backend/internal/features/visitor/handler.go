@@ -92,3 +92,55 @@ func (hdlr handler) CreateNewWhatsappMessage(c *gin.Context) {
 		"Successfully send whatsapp message",
 	)
 }
+
+func (hdlr *handler) GetVoiceToken(c *gin.Context) {
+	tagToken := c.Param("tagToken")
+
+	token, err := hdlr.srv.GetVoiceToken(
+		c.Request.Context(),
+		tagToken,
+	)
+
+	if err != nil {
+		response.Error(
+			c.Writer,
+			false,
+			http.StatusInternalServerError,
+			"Unable to generate call token: "+err.Error(),
+		)
+		return
+	}
+
+	response.Success(
+		c.Writer,
+		true,
+		http.StatusOK,
+		gin.H{"token": token},
+		"Call token generated",
+	)
+}
+
+func (hdlr *handler) Voice(c *gin.Context) {
+
+	tagToken := c.Param("tagToken")
+
+	twiml, err := hdlr.srv.GetVoiceResponse(
+		c.Request.Context(),
+		tagToken,
+	)
+	if err != nil {
+		response.Error(
+			c.Writer,
+			false,
+			http.StatusInternalServerError,
+			"Unable to process call"+err.Error(),
+		)
+		return
+	}
+
+	c.Data(
+		http.StatusOK,
+		"application/xml",
+		[]byte(twiml),
+	)
+}
