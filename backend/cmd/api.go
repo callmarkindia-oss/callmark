@@ -12,6 +12,7 @@ import (
 
 	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
 	tagModule "github.com/DeveloperAromal/callmark/internal/features/tag"
+	visitorModule "github.com/DeveloperAromal/callmark/internal/features/visitor"
 	routers "github.com/DeveloperAromal/callmark/internal/interfaces"
 )
 
@@ -69,6 +70,7 @@ func (app *application) mount() *gin.Engine {
 	modules := []routers.RouterInterface{
 		authModule.NewRouter(app.db),
 		tagModule.NewRouter(app.db, app.authModule),
+		visitorModule.NewRouter(app.db),
 	}
 
 	for _, m := range modules {
