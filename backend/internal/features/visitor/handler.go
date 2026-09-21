@@ -120,38 +120,38 @@ func (hdlr *handler) GetVoiceToken(c *gin.Context) {
 	)
 }
 
-func (hdlr *handler) Voice(c *gin.Context) {
-	if !isValidTwilioVoiceWebhook(c) {
-		response.Error(
-			c.Writer,
-			false,
-			http.StatusForbidden,
-			"Invalid Twilio webhook signature",
-		)
-		return
-	}
+// func (hdlr *handler) Voice(c *gin.Context) {
+// 	if !isValidTwilioVoiceWebhook(c) {
+// 		response.Error(
+// 			c.Writer,
+// 			false,
+// 			http.StatusForbidden,
+// 			"Invalid Twilio webhook signature",
+// 		)
+// 		return
+// 	}
 
-	// Twilio forwards the signed Voice grant application parameters in its POST
-	// form body. The destination phone number is resolved server-side.
-	tagToken := c.PostForm("tagToken")
+// 	// Twilio forwards the signed Voice grant application parameters in its POST
+// 	// form body. The destination phone number is resolved server-side.
+// 	tagToken := c.PostForm("tagToken")
 
-	twiml, err := hdlr.srv.GetVoiceResponse(
-		c.Request.Context(),
-		tagToken,
-	)
-	if err != nil {
-		response.Error(
-			c.Writer,
-			false,
-			http.StatusInternalServerError,
-			"Unable to process call: "+err.Error(),
-		)
-		return
-	}
+// 	twiml, err := hdlr.srv.GetVoiceResponse(
+// 		c.Request.Context(),
+// 		tagToken,
+// 	)
+// 	if err != nil {
+// 		response.Error(
+// 			c.Writer,
+// 			false,
+// 			http.StatusInternalServerError,
+// 			"Unable to process call: "+err.Error(),
+// 		)
+// 		return
+// 	}
 
-	c.Data(
-		http.StatusOK,
-		"application/xml",
-		[]byte(twiml),
-	)
-}
+// 	c.Data(
+// 		http.StatusOK,
+// 		"application/xml",
+// 		[]byte(twiml),
+// 	)
+// }
