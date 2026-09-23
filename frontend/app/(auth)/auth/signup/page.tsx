@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Logo from "@/features/components/shared/Logo";
+import Logo from "@/app/components/shared/Logo";
 
 type SignupValues = {
     firstName: string;
