@@ -124,14 +124,19 @@ export default function Login() {
                             disabled={loading}
                             className="btn btn-primary w-full"
                         >
-                            {loading ? "Logging in..." : "Log in"}
+                            <Link
+                                href="/dashboard"
+                                className="font-medium text-foreground underline underline-offset-4"
+                            >
+                                {loading ? "Logging in..." : "Log in"}
+                            </Link>
                         </button>
                     </form>
 
                     <p className="mt-6 text-center text-sm text-muted">
                         Don&apos;t have an account?{" "}
                         <Link
-                            href="/signup"
+                            href="/auth/signup"
                             className="font-medium text-foreground underline underline-offset-4"
                         >
                             Sign up
