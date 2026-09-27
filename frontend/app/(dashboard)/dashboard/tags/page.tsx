@@ -190,7 +190,7 @@ export default function Tags() {
                 }
             >
                 {step === 1 ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2 pb-6">
                         {tagTypes.map(({ value, label, description, icon: Icon }) => {
                             const isSelected = selectedType === value;
                             return (
