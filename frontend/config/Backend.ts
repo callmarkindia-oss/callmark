@@ -2,7 +2,7 @@ const isProduction =
   process.env.NEXT_PUBLIC_NODE_ENV === "production";
 
 const baseUrl = isProduction
-  ? process.env.NEXT_PUBLIC_API_URL
+  ? ""
   : "http://localhost:8080";
 
 export const APIENDPOINT = {
