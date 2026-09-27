@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/v1/:path*",
-        destination: "https://qrstay-1.onrender.com/api/v1/:path*",
+        destination: "https://callmark.onrender.com/api/v1/:path*",
       },
     ];
   },
