@@ -170,7 +170,7 @@ export default function Tags() {
                 }
                 footer={
                     step === 2 ? (
-                        <div className="pb-3">
+                        <div className="pb-3 flex gap-3">
                             <button
                                 type="button"
                                 onClick={() => setStep(1)}
