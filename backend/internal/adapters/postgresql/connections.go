@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DeveloperAromal/callmark/pkg/logger"
+	"github.com/callmarkindia/callmark/pkg/logger"
 	_ "github.com/lib/pq"
 )
 

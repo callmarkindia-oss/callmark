@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	hashing "github.com/DeveloperAromal/callmark/pkg/hashing"
+	hashing "github.com/callmarkindia/callmark/pkg/hashing"
 )
 
 type Service interface {

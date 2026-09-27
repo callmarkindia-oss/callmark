@@ -4,14 +4,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/DeveloperAromal/callmark/pkg/banner"
-	"github.com/DeveloperAromal/callmark/pkg/logger"
+	"github.com/callmarkindia/callmark/pkg/banner"
+	"github.com/callmarkindia/callmark/pkg/logger"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
-	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
+	authModule "github.com/callmarkindia/callmark/internal/features/auth"
 
-	databseAdapter "github.com/DeveloperAromal/callmark/internal/adapters/postgresql"
+	databseAdapter "github.com/callmarkindia/callmark/internal/adapters/postgresql"
 )
 
 func main() {

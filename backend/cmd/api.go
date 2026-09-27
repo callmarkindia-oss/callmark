@@ -10,10 +10,10 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
-	tagModule "github.com/DeveloperAromal/callmark/internal/features/tag"
-	visitorModule "github.com/DeveloperAromal/callmark/internal/features/visitor"
-	routers "github.com/DeveloperAromal/callmark/internal/interfaces"
+	authModule "github.com/callmarkindia/callmark/internal/features/auth"
+	tagModule "github.com/callmarkindia/callmark/internal/features/tag"
+	visitorModule "github.com/callmarkindia/callmark/internal/features/visitor"
+	routers "github.com/callmarkindia/callmark/internal/interfaces"
 )
 
 var startTime time.Time

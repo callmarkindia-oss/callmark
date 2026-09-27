@@ -169,7 +169,7 @@ export default function Tags() {
                 }
                 footer={
                     step === 2 ? (
-                        <>
+                        <div className="pb-3">
                             <button
                                 type="button"
                                 onClick={() => setStep(1)}
@@ -185,7 +185,7 @@ export default function Tags() {
                             >
                                 {submitting ? "Creating..." : "Create Tag"}
                             </button>
-                        </>
+                        </div>
                     ) : undefined
                 }
             >

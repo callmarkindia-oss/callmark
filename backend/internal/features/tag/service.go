@@ -3,8 +3,8 @@ package tag
 import (
 	"context"
 
-	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
-	hashing "github.com/DeveloperAromal/callmark/pkg/hashing"
+	authModule "github.com/callmarkindia/callmark/internal/features/auth"
+	hashing "github.com/callmarkindia/callmark/pkg/hashing"
 )
 
 type Service interface {

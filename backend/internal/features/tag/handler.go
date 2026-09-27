@@ -3,7 +3,7 @@ package tag
 import (
 	"net/http"
 
-	formatter "github.com/DeveloperAromal/callmark/pkg/formate"
+	formatter "github.com/callmarkindia/callmark/pkg/formate"
 	"github.com/gin-gonic/gin"
 )
 

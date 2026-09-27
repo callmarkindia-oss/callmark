@@ -3,7 +3,7 @@ package visitor
 import (
 	"context"
 
-	twilio "github.com/DeveloperAromal/callmark/pkg/twilio"
+	twilio "github.com/callmarkindia/callmark/pkg/twilio"
 )
 
 type Service interface {

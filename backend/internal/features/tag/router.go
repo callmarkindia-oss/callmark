@@ -3,7 +3,7 @@ package tag
 import (
 	"database/sql"
 
-	authModule "github.com/DeveloperAromal/callmark/internal/features/auth"
+	authModule "github.com/callmarkindia/callmark/internal/features/auth"
 	"github.com/gin-gonic/gin"
 )
 
