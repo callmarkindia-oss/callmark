@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	formatter "github.com/DeveloperAromal/callmark/pkg/formate"
@@ -20,6 +21,35 @@ func NewHandler(srv Service) *handler {
 
 var response = formatter.NewRepository()
 
+func sessionToken(c *gin.Context) (string, error) {
+	authorization := strings.TrimSpace(c.GetHeader("Authorization"))
+	if len(authorization) > len("Bearer ") && strings.EqualFold(authorization[:len("Bearer ")], "Bearer ") {
+		if token := strings.TrimSpace(authorization[len("Bearer "):]); token != "" {
+			return token, nil
+		}
+	}
+
+	if token, err := c.Cookie("session_token"); err == nil && token != "" {
+		return token, nil
+	}
+
+	return "", http.ErrNoCookie
+}
+
+func isHTTPSRequest(request *http.Request) bool {
+	forwardedProto := strings.TrimSpace(strings.Split(request.Header.Get("X-Forwarded-Proto"), ",")[0])
+	if strings.EqualFold(forwardedProto, "https") {
+		return true
+	}
+
+	if strings.Contains(strings.ToLower(request.Header.Get("Forwarded")), "proto=https") {
+		return true
+	}
+
+	origin := strings.TrimSpace(strings.Split(request.Header.Get("Origin"), ",")[0])
+	return strings.HasPrefix(strings.ToLower(origin), "https://")
+}
+
 func (hdlr handler) Signup(c *gin.Context) {
 
 	var cred CredModel
@@ -36,11 +66,10 @@ func (hdlr handler) Signup(c *gin.Context) {
 
 	result, err := hdlr.srv.Signup(c.Request.Context(), cred)
 	if err != nil {
-		response.Success(
+		response.Error(
 			c.Writer,
-			true,
+			false,
 			http.StatusInternalServerError,
-			nil,
 			"Unexpected error occured",
 		)
 		return
@@ -85,7 +114,12 @@ func (hdlr *handler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetSameSite(http.SameSiteLaxMode)
+	secureCookie := c.Request.TLS != nil || isHTTPSRequest(c.Request)
+	if secureCookie {
+		c.SetSameSite(http.SameSiteNoneMode)
+	} else {
+		c.SetSameSite(http.SameSiteLaxMode)
+	}
 
 	c.SetCookie(
 		"session_token",
@@ -93,7 +127,7 @@ func (hdlr *handler) Login(c *gin.Context) {
 		int(sessionDuration.Seconds()),
 		"/",
 		"",
-		true,
+		secureCookie,
 		true,
 	)
 
@@ -101,33 +135,31 @@ func (hdlr *handler) Login(c *gin.Context) {
 		c.Writer,
 		true,
 		http.StatusOK,
-		nil,
+		gin.H{"session_token": token},
 		"Login successful",
 	)
 }
 
 func (hdlr *handler) MeAuthorization(c *gin.Context) {
 
-	token, err := c.Cookie("session_token")
+	token, err := sessionToken(c)
 	if err != nil {
-		response.Success(
+		response.Error(
 			c.Writer,
 			false,
 			http.StatusUnauthorized,
-			nil,
-			"Sesssion not found",
+			"Session not found",
 		)
 		return
 	}
 
 	result, err := hdlr.srv.ME(c.Request.Context(), token)
 	if err != nil {
-		response.Success(
+		response.Error(
 			c.Writer,
 			false,
 			http.StatusUnauthorized,
-			nil,
-			"Invalid session"+err.Error(),
+			"Invalid session: "+err.Error(),
 		)
 		return
 	}
