@@ -49,7 +49,7 @@ export default function Tags() {
             try {
                 const res = await makeApiCall(
                     "GET",
-                    APIENDPOINT.GetAllTags
+                    APIENDPOINT.GetAllTags + "?mode=all"
                 );
 
                 if (res.success) {
@@ -117,7 +117,7 @@ export default function Tags() {
                 )}
             </div>
 
-            <div className="space-y-4 pt-4">
+            <div className="space-y-4 pt-6">
                 {loading ? (
                     <>
                         {Array.from({ length: 4 }).map((_, i) => (
@@ -134,6 +134,7 @@ export default function Tags() {
                             name={tag.identifier}
                             description={tag.tag_type}
                             status={tag.is_active ? "active" : "expired"}
+                            page="tag"
                             code={tag.tag_token}
                         />
                     ))

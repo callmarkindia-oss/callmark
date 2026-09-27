@@ -3,11 +3,12 @@ package tag
 import (
 	"context"
 	"database/sql"
+	"fmt"
 )
 
 type Repository interface {
 	CreateTag(ctx context.Context, tag TagModel) (TagModel, error)
-	GetAllTags(ctx context.Context, user_id string) ([]TagModel, error)
+	GetAllTags(ctx context.Context, userID string, activeMode string) ([]TagModel, error)
 }
 
 type repository struct {
@@ -38,12 +39,28 @@ func (repo *repository) CreateTag(ctx context.Context, tag TagModel) (TagModel, 
 	return tag, err
 }
 
-func (repo *repository) GetAllTags(ctx context.Context, user_id string) ([]TagModel, error) {
+func (repo *repository) GetAllTags(ctx context.Context, userID string, activeMode string) ([]TagModel, error) {
+
+	var isActive *bool
+
+	switch activeMode {
+	case "true":
+		v := true
+		isActive = &v
+	case "false":
+		v := false
+		isActive = &v
+	case "all":
+		isActive = nil
+	default:
+		return nil, fmt.Errorf("invalid active mode: %s", activeMode)
+	}
 
 	rows, err := repo.db.QueryContext(
 		ctx,
 		AllTagFetchQuery,
-		user_id,
+		userID,
+		isActive,
 	)
 	if err != nil {
 		return []TagModel{}, err

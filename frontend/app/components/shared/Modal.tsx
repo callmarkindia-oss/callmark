@@ -54,6 +54,7 @@ export default function Modal({
             }}
             role="presentation"
         >
+
             <div
                 ref={panelRef}
                 role="dialog"
@@ -62,6 +63,9 @@ export default function Modal({
                 className="w-full max-w-md rounded-t-2xl border border-border bg-surface p-5 shadow-xl sm:rounded-2xl"
                 style={{ paddingBottom: "env(safe-area-inset-bottom, 1.25rem)" }}
             >
+                <div className="flex items-center justify-center mb-4">
+                    <div className="bg-muted w-20 h-1 rounded-full" />
+                </div>
                 {(title || description) && (
                     <div className="mb-4 flex items-start justify-between gap-3">
                         <div>

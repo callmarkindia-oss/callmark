@@ -24,4 +24,5 @@ const AllTagFetchQuery = `
 		expiry_at
 	FROM tags
 	WHERE user_id = $1
+	  AND ($2::boolean IS NULL OR is_active = $2)
 `

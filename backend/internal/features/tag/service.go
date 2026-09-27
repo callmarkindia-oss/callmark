@@ -9,7 +9,7 @@ import (
 
 type Service interface {
 	CreateTag(ctx context.Context, tag TagModel, token string) (TagModel, error)
-	GetAllTags(ctx context.Context, token string) ([]TagModel, error)
+	GetAllTags(ctx context.Context, token string, activeMode string) ([]TagModel, error)
 }
 
 type service struct {
@@ -47,7 +47,7 @@ func (srv *service) CreateTag(ctx context.Context, tag TagModel, token string) (
 
 }
 
-func (srv *service) GetAllTags(ctx context.Context, token string) ([]TagModel, error) {
+func (srv *service) GetAllTags(ctx context.Context, token string, activeMode string) ([]TagModel, error) {
 
 	sessionTokenHash := hashing.NewAlgo().CreateSHA(token)
 
@@ -56,5 +56,5 @@ func (srv *service) GetAllTags(ctx context.Context, token string) ([]TagModel, e
 		return []TagModel{}, err
 	}
 
-	return srv.repo.GetAllTags(ctx, user.User.ID)
+	return srv.repo.GetAllTags(ctx, user.User.ID, activeMode)
 }

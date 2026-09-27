@@ -80,7 +80,9 @@ func (hdlr handler) GetAllTags(c *gin.Context) {
 		return
 	}
 
-	result, err := hdlr.srv.GetAllTags(c.Request.Context(), token)
+	mode := c.Query("mode")
+
+	result, err := hdlr.srv.GetAllTags(c.Request.Context(), token, mode)
 	if err != nil {
 		response.Success(
 			c.Writer,
