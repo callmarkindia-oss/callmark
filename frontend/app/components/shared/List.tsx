@@ -124,8 +124,7 @@ export default function List({
             >
                 <div className="space-y-2 pb-6">
                     <p className="text-sm text-muted">
-                        Renewing this tag will extend its validity. Payment integration
-                        is not wired up yet this is a placeholder flow.
+                        Renewing this tag will extend its validity
                     </p>
                 </div>
             </Modal>
