@@ -52,7 +52,7 @@ func (hdlr handler) CreateNewTag(c *gin.Context) {
 			true,
 			http.StatusInternalServerError,
 			nil,
-			"Unexpected error occured",
+			"Unexpected error occured"+err.Error(),
 		)
 		return
 	}

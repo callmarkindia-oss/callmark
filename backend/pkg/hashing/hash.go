@@ -14,7 +14,7 @@ type Algo interface {
 	HashPassword(password string) (string, error)
 	ComparePasswordHash(password string, hash string) (bool, error)
 	RandomToken() (string, error)
-	CreateSHA(token string) (string, error)
+	CreateSHA(token string) string
 }
 
 type algo struct{}
@@ -63,8 +63,7 @@ func (al *algo) RandomToken() (string, error) {
 
 }
 
-func (al *algo) CreateSHA(token string) (string, error) {
+func (*algo) CreateSHA(token string) string {
 	hash := sha256.Sum256([]byte(token))
-
-	return hex.EncodeToString(hash[:]), nil
+	return hex.EncodeToString(hash[:])
 }

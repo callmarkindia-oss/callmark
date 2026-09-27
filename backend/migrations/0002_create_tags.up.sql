@@ -3,7 +3,7 @@ CREATE TABLE tags (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     identifier VARCHAR(255) NOT NULL,
     tag_token VARCHAR(255) NOT NULL UNIQUE,
-    tag_type VARCHAR(50) NOT NULL CHECK (tag_type IN ('Home', 'Vehicle')),
+    tag_type VARCHAR(50) NOT NULL CHECK (tag_type IN ('Home', 'Vehicle', 'Personal')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     is_active BOOLEAN NOT NULL DEFAULT FALSE,
     expiry_at TIMESTAMPTZ NULL

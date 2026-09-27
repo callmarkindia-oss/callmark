@@ -66,10 +66,7 @@ func (srv *service) Login(ctx context.Context, email string, password string) (s
 		return "", err
 	}
 
-	tokenHash, err := hashing.NewAlgo().CreateSHA(token)
-	if err != nil {
-		return "", err
-	}
+	tokenHash := hashing.NewAlgo().CreateSHA(token)
 
 	if isValid {
 		_, err := srv.repo.CreateSession(
@@ -90,10 +87,7 @@ func (srv *service) Login(ctx context.Context, email string, password string) (s
 
 func (srv *service) ME(ctx context.Context, token string) (MeModal, error) {
 
-	tokenHash, err := hashing.NewAlgo().CreateSHA(token)
-	if err != nil {
-		return MeModal{}, err
-	}
+	tokenHash := hashing.NewAlgo().CreateSHA(token)
 
 	return srv.repo.ME(ctx, tokenHash)
 }

@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Logo from "@/features/components/shared/Logo";
+import Logo from "@/app/components/shared/Logo";
+import { useApiCall } from "@/hooks/useApiCall";
+import { APIENDPOINT } from "@/config/Backend";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type SignupValues = {
     firstName: string;
@@ -61,14 +65,12 @@ function Field({
     );
 }
 
-async function registerUser(payload: Omit<SignupValues, "confirmPassword">) {
-    console.log(payload);
-}
-
 export default function Signup() {
     const [values, setValues] = useState<SignupValues>(initialValues);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const { makeApiCall } = useApiCall()
+    const router = useRouter()
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
@@ -79,16 +81,41 @@ export default function Signup() {
         e.preventDefault();
         setError("");
 
-        const { confirmPassword, ...payload } = values;
-
-        if (payload.password !== confirmPassword) {
+        if (values.password !== values.confirmPassword) {
             setError("Passwords do not match.");
             return;
         }
 
+        const payload = {
+            fname: values.firstName,
+            lname: values.lastName,
+            phoneNumber: values.phone,
+            email: values.email,
+            password: values.password,
+        };
+
         setLoading(true);
+
         try {
-            await registerUser(payload);
+            const res = await makeApiCall(
+                "POST",
+                APIENDPOINT.SignUp,
+                payload
+            );
+
+            if (res.success) {
+                toast.success(res.message);
+                router.push("/auth/signin");
+            } else {
+                toast.error(res.message);
+            }
+        } catch (err) {
+
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Something went wrong. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -115,6 +142,7 @@ export default function Signup() {
                                 value={values.firstName}
                                 onChange={handleChange}
                                 autoComplete="given-name"
+                                placeholder="John"
                             />
                             <Field
                                 label="Last name"
@@ -122,6 +150,7 @@ export default function Signup() {
                                 value={values.lastName}
                                 onChange={handleChange}
                                 autoComplete="family-name"
+                                placeholder="Doe"
                             />
                         </div>
 
@@ -132,6 +161,7 @@ export default function Signup() {
                             value={values.phone}
                             onChange={handleChange}
                             autoComplete="tel"
+                            placeholder="+91 98765 43210"
                         />
 
                         <Field
@@ -141,6 +171,7 @@ export default function Signup() {
                             value={values.email}
                             onChange={handleChange}
                             autoComplete="email"
+                            placeholder="you@example.com"
                         />
 
                         <Field
@@ -150,6 +181,7 @@ export default function Signup() {
                             value={values.password}
                             onChange={handleChange}
                             autoComplete="new-password"
+                            placeholder="At least 8 characters"
                         />
 
                         <Field
@@ -159,8 +191,8 @@ export default function Signup() {
                             value={values.confirmPassword}
                             onChange={handleChange}
                             autoComplete="new-password"
+                            placeholder="Re-enter your password"
                         />
-
                         {error && (
                             <p role="alert" className="text-sm text-red-600 dark:text-red-400">
                                 {error}
