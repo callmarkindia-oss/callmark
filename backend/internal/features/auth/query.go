@@ -3,8 +3,8 @@ package auth
 const SignupQuery = `
 	INSERT INTO users
 		(
-			lname,
 			fname,
+			lname,
 			email,
 			phonenumber,
 			password
