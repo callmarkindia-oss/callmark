@@ -43,6 +43,7 @@ func (hdlr handler) Signup(c *gin.Context) {
 			nil,
 			"Unexpected error occured",
 		)
+		return
 	}
 
 	response.Success(
@@ -84,6 +85,8 @@ func (hdlr *handler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetSameSite(http.SameSiteLaxMode)
+
 	c.SetCookie(
 		"session_token",
 		token,
@@ -124,7 +127,7 @@ func (hdlr *handler) MeAuthorization(c *gin.Context) {
 			false,
 			http.StatusUnauthorized,
 			nil,
-			"Invalid session",
+			"Invalid session"+err.Error(),
 		)
 		return
 	}

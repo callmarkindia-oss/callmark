@@ -31,10 +31,7 @@ func (srv *service) CreateTag(ctx context.Context, tag TagModel, token string) (
 		return TagModel{}, err
 	}
 
-	sessionTokenHash, err := hashing.NewAlgo().CreateSHA(token)
-	if err != nil {
-		return TagModel{}, err
-	}
+	sessionTokenHash := hashing.NewAlgo().CreateSHA(token)
 
 	user, err := srv.authModule.ME(ctx, sessionTokenHash)
 	if err != nil {
@@ -52,10 +49,7 @@ func (srv *service) CreateTag(ctx context.Context, tag TagModel, token string) (
 
 func (srv *service) GetAllTags(ctx context.Context, token string) ([]TagModel, error) {
 
-	sessionTokenHash, err := hashing.NewAlgo().CreateSHA(token)
-	if err != nil {
-		return []TagModel{}, err
-	}
+	sessionTokenHash := hashing.NewAlgo().CreateSHA(token)
 
 	user, err := srv.authModule.ME(ctx, sessionTokenHash)
 	if err != nil {

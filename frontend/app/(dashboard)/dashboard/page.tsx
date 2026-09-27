@@ -1,9 +1,6 @@
+import { redirect } from "next/navigation";
 
 
 export default function Dashboard() {
-    return (
-        <section>
-            //
-        </section>
-    )
+    redirect("/dashboard/home")
 }

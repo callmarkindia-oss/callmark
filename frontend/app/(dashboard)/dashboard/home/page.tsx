@@ -1,6 +1,10 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 import { Bell, QrCode, Store, Compass, Tag, Shield, Package, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { RectangularSkelton } from "@/app/components/shared/skelton";
 
 const popularTags = [
   {
@@ -18,13 +22,21 @@ const popularTags = [
 ];
 
 export default function Home() {
+
+  const { user, loading } = useAuth()
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex max-w-md flex-col gap-6 px-5 pt-[calc(env(safe-area-inset-top,0px)+1.25rem)] pb-[calc(env(safe-area-inset-bottom,0px)+6rem)]">
         <header className="flex items-center justify-between">
           <div>
             <p className="text-sm text-muted">Good afternoon</p>
-            <h1 className="text-xl font-semibold tracking-tight">Rahul</h1>
+            {
+              loading ? (
+                <RectangularSkelton customStyle="w-30 h-4" />
+              ) : (
+                <h1 className="text-xl font-semibold tracking-tight">{user?.fname} {" "} {user?.lname}</h1>
+              )
+            }
           </div>
           <Link
             href="/notifications"
@@ -93,7 +105,7 @@ export default function Home() {
               See all
             </Link>
           </div>
-          <div className="-mx-5 flex gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="-mx-5 flex gap-3 overflow-x-auto px-5 pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden">
             {popularTags.map(({ label, blurb }) => (
               <Link
                 key={label}

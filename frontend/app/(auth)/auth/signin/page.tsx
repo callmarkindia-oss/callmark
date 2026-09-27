@@ -3,6 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "@/app/components/shared/Logo";
+import { useApiCall } from "@/hooks/useApiCall";
+import { APIENDPOINT } from "@/config/Backend";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 
 type LoginValues = {
     email: string;
@@ -61,6 +66,8 @@ export default function Login() {
     const [values, setValues] = useState<LoginValues>(initialValues);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const { makeApiCall } = useApiCall()
+    const router = useRouter()
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
@@ -70,12 +77,27 @@ export default function Login() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError("");
-        setLoading(true);
 
+        const { ...payload } = values;
+
+        setLoading(true);
         try {
-            await loginUser(values);
-        } catch {
-            setError("Something went wrong. Please try again.");
+            const res = await makeApiCall(
+                "POST",
+                APIENDPOINT.Login,
+                payload
+            )
+            if (res.success) {
+                toast.success(res.message)
+                router.push("/dashboard/home")
+            } else {
+                toast.error(res.message)
+            }
+        } catch (err) {
+            console.error("Signup error:", err);
+            setError(
+                err instanceof Error ? err.message : "Something went wrong. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -124,12 +146,7 @@ export default function Login() {
                             disabled={loading}
                             className="btn btn-primary w-full"
                         >
-                            <Link
-                                href="/dashboard"
-                                className="font-medium text-foreground underline underline-offset-4"
-                            >
-                                {loading ? "Logging in..." : "Log in"}
-                            </Link>
+                            {loading ? "Logging in..." : "Log in"}
                         </button>
                     </form>
 

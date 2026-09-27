@@ -5,6 +5,7 @@ import { Home, Tags, Zap } from "lucide-react";
 
 import BottomBar from "@/app/components/shared/Bottombar";
 import BottomBarIcons from "@/app/components/shared/BottombarIcons";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 const TabBarItems = [
     {
@@ -32,7 +33,7 @@ export default function ExploreLayout({
     const path = usePathname();
 
     return (
-        <main>
+        <AuthProvider>
             {children}
 
             <BottomBar>
@@ -49,6 +50,6 @@ export default function ExploreLayout({
                     />
                 ))}
             </BottomBar>
-        </main>
+        </AuthProvider>
     );
 }
