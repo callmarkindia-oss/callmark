@@ -34,7 +34,7 @@ func (app *application) mount() *gin.Engine {
 
 	// MIDDLEWARE
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "https://callmark-five.vercel.app/"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://callmark-five.vercel.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
