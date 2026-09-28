@@ -11,6 +11,7 @@ type Service interface {
 	CreateNewWhatsappMessage(ctx context.Context, message string, tagToken string) (MessageModel, error)
 	GetVoiceToken(ctx context.Context, tagToken string) (string, error)
 	GetVoiceResponse(ctx context.Context, tagToken string) (string, error)
+	DisplayOwnerNameFromTagToken(ctx context.Context, tagToken string) (OwnerDisplay, error)
 }
 
 type service struct {
@@ -70,4 +71,8 @@ func (srv *service) GetVoiceResponse(ctx context.Context, tagToken string) (stri
 	}
 
 	return createVoiceTwiML(phno)
+}
+
+func (srv *service) DisplayOwnerNameFromTagToken(ctx context.Context, tagToken string) (OwnerDisplay, error) {
+	return srv.repo.DisplayOwnerNameFromTagToken(ctx, tagToken)
 }

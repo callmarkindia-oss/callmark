@@ -9,6 +9,7 @@ type Repository interface {
 	CreateSMS(ctx context.Context, message string, tagToken string) (MessageModel, error)
 	CreateWhatsappMessage(ctx context.Context, message string, tagToken string) (MessageModel, error)
 	GetPhonenumberFromTagToken(ctx context.Context, tagToken string) (string, error)
+	DisplayOwnerNameFromTagToken(ctx context.Context, tagToken string) (OwnerDisplay, error)
 }
 
 type repository struct {
@@ -80,4 +81,20 @@ func (repo *repository) GetPhonenumberFromTagToken(ctx context.Context, tagToken
 	}
 
 	return phonenumber, nil
+}
+
+func (repo *repository) DisplayOwnerNameFromTagToken(ctx context.Context, tagToken string) (OwnerDisplay, error) {
+
+	var owner OwnerDisplay
+
+	err := repo.db.QueryRowContext(
+		ctx,
+		tagTokenOwnerName,
+		tagToken,
+	).Scan(
+		&owner.Fname,
+		&owner.Lname,
+	)
+
+	return owner, err
 }

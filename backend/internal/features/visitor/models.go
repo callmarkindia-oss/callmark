@@ -11,6 +11,11 @@ type MessageModel struct {
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
+type OwnerDisplay struct {
+	Fname string `json:"fname" db:"fname"`
+	Lname string `json:"lname" db:"lname"`
+}
+
 type twimlResponse struct {
 	XMLName xml.Name  `xml:"Response"`
 	Dial    twimlDial `xml:"Dial"`

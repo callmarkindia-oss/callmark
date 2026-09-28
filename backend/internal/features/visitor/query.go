@@ -9,6 +9,18 @@ const visitorSMSQuery = `
 	VALUES ($1, $2)
 	RETURNING id, created_at, message
 `
+
+const tagTokenOwnerName = `
+    SELECT 
+        u.fname,
+        u.lname
+    FROM tags t
+    INNER JOIN users u
+        ON u.id = t.user_id
+    WHERE 
+        t.tag_token = $1
+`
+
 const tagTokenToPhNoQuery = `
 	SELECT 
 		u.phonenumber 

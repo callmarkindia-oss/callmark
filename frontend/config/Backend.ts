@@ -29,4 +29,7 @@ export const APIENDPOINT = {
     `${baseUrl}/api/v1/payments/tags/${tagId}/renew/order`,
   VerifyRenewalPayment: (tagId: string) =>
     `${baseUrl}/api/v1/payments/tags/${tagId}/renew/verify`,
+
+  DisplayInitialNameForVisitors: (tagToken: string) =>
+    `${baseUrl}/api/v1/visitors/initial/token/${tagToken}`
 };

@@ -120,6 +120,33 @@ func (hdlr *handler) GetVoiceToken(c *gin.Context) {
 	)
 }
 
+func (hdlr *handler) DisplayOwnerNameFromTagToken(c *gin.Context) {
+	tagToken := c.Param("tagToken")
+
+	owner, err := hdlr.srv.DisplayOwnerNameFromTagToken(
+		c.Request.Context(),
+		tagToken,
+	)
+
+	if err != nil {
+		response.Error(
+			c.Writer,
+			false,
+			http.StatusInternalServerError,
+			"Unexpected error occured"+err.Error(),
+		)
+		return
+	}
+
+	response.Success(
+		c.Writer,
+		true,
+		http.StatusOK,
+		owner,
+		"Owner name fetched sucessfully",
+	)
+}
+
 // func (hdlr *handler) Voice(c *gin.Context) {
 // 	if !isValidTwilioVoiceWebhook(c) {
 // 		response.Error(
