@@ -59,7 +59,7 @@ function Field({
                 autoComplete={autoComplete}
                 placeholder={placeholder}
                 required
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-ring"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
             />
         </div>
     );
@@ -69,8 +69,8 @@ export default function Signup() {
     const [values, setValues] = useState<SignupValues>(initialValues);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { makeApiCall } = useApiCall()
-    const router = useRouter()
+    const { makeApiCall } = useApiCall();
+    const router = useRouter();
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
@@ -97,11 +97,7 @@ export default function Signup() {
         setLoading(true);
 
         try {
-            const res = await makeApiCall(
-                "POST",
-                APIENDPOINT.SignUp,
-                payload
-            );
+            const res = await makeApiCall("POST", APIENDPOINT.SignUp, payload);
 
             if (res.success) {
                 toast.success(res.message);
@@ -110,7 +106,6 @@ export default function Signup() {
                 toast.error(res.message);
             }
         } catch (err) {
-
             setError(
                 err instanceof Error
                     ? err.message
@@ -123,9 +118,11 @@ export default function Signup() {
 
     return (
         <section className="flex min-h-screen flex-col p-6">
-            <Logo />
+            <header className="pb-6">
+                <Logo />
+            </header>
 
-            <div className="flex flex-1 items-center justify-center py-10">
+            <div className="flex flex-1 justify-center pb-10 pt-2 sm:pt-8">
                 <div className="w-full max-w-md">
                     <h3 className="text-3xl font-semibold text-foreground">
                         Create an account
@@ -134,8 +131,8 @@ export default function Signup() {
                         Enter your details to get started.
                     </p>
 
-                    <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
-                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <Field
                                 label="First name"
                                 name="firstName"
@@ -193,8 +190,9 @@ export default function Signup() {
                             autoComplete="new-password"
                             placeholder="Re-enter your password"
                         />
+
                         {error && (
-                            <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                            <p role="alert" className="text-sm text-red-500">
                                 {error}
                             </p>
                         )}
@@ -202,7 +200,7 @@ export default function Signup() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-primary w-full"
+                            className="btn btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {loading ? "Creating account..." : "Create account"}
                         </button>
@@ -210,7 +208,10 @@ export default function Signup() {
 
                     <p className="mt-6 text-center text-sm text-muted">
                         Already have an account?{" "}
-                        <Link href="/auth/signin" className="font-medium text-foreground underline underline-offset-4">
+                        <Link
+                            href="/auth/signin"
+                            className="font-medium text-foreground underline underline-offset-4"
+                        >
                             Log in
                         </Link>
                     </p>

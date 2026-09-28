@@ -8,7 +8,6 @@ import { APIENDPOINT } from "@/config/Backend";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-
 type LoginValues = {
     email: string;
     password: string;
@@ -52,22 +51,18 @@ function Field({
                 autoComplete={autoComplete}
                 placeholder={placeholder}
                 required
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-ring"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
             />
         </div>
     );
-}
-
-async function loginUser(values: LoginValues) {
-    console.log({ email: values.email });
 }
 
 export default function Login() {
     const [values, setValues] = useState<LoginValues>(initialValues);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { makeApiCall } = useApiCall()
-    const router = useRouter()
+    const { makeApiCall } = useApiCall();
+    const router = useRouter();
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
@@ -78,23 +73,19 @@ export default function Login() {
         e.preventDefault();
         setError("");
 
-        const { ...payload } = values;
+        const payload = { ...values };
 
         setLoading(true);
         try {
-            const res = await makeApiCall(
-                "POST",
-                APIENDPOINT.Login,
-                payload
-            )
+            const res = await makeApiCall("POST", APIENDPOINT.Login, payload);
             if (res.success) {
-                toast.success(res.message)
-                router.push("/dashboard/home")
+                toast.success(res.message);
+                router.push("/dashboard/home");
             } else {
-                toast.error(res.message)
+                toast.error(res.message);
             }
         } catch (err) {
-            console.error("Signup error:", err);
+            console.error("Login error:", err);
             setError(
                 err instanceof Error ? err.message : "Something went wrong. Please try again."
             );
@@ -105,9 +96,11 @@ export default function Login() {
 
     return (
         <section className="flex min-h-screen flex-col p-6">
-            <Logo />
+            <header className="pb-6">
+                <Logo />
+            </header>
 
-            <div className="flex flex-1 items-center justify-center py-10">
+            <div className="flex flex-1 justify-center pb-10 pt-2 sm:pt-8">
                 <div className="w-full max-w-md">
                     <h3 className="text-3xl font-semibold text-foreground">
                         Welcome back
@@ -116,7 +109,7 @@ export default function Login() {
                         Log in to your account to continue.
                     </p>
 
-                    <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+                    <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
                         <Field
                             label="Email"
                             name="email"
@@ -124,6 +117,7 @@ export default function Login() {
                             value={values.email}
                             onChange={handleChange}
                             autoComplete="email"
+                            placeholder="you@example.com"
                         />
 
                         <Field
@@ -133,10 +127,20 @@ export default function Login() {
                             value={values.password}
                             onChange={handleChange}
                             autoComplete="current-password"
+                            placeholder="Enter your password"
                         />
 
+                        <div className="flex justify-end">
+                            <Link
+                                href="/auth/forgot-password"
+                                className="text-sm font-medium text-muted underline underline-offset-4 hover:text-foreground"
+                            >
+                                Forgot password?
+                            </Link>
+                        </div>
+
                         {error && (
-                            <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                            <p role="alert" className="text-sm text-red-500">
                                 {error}
                             </p>
                         )}
@@ -144,7 +148,7 @@ export default function Login() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn btn-primary w-full"
+                            className="btn btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {loading ? "Logging in..." : "Log in"}
                         </button>

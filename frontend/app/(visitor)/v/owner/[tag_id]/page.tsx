@@ -16,6 +16,7 @@ import { APIENDPOINT } from "@/config/Backend"
 import { useApiCall } from "@/hooks/useApiCall"
 import { ownerInital } from "@/types/visitor_types"
 import { RectangularSkelton } from "@/app/components/shared/skelton"
+import Logo from "@/app/components/shared/Logo"
 
 type Channel = "whatsapp" | "sms"
 type OwnerState = "loading" | "ready" | "missing"
@@ -103,8 +104,12 @@ export default function VisitorPage() {
     return (
         <main className="min-h-screen bg-background text-foreground">
             <div className="mx-auto flex min-h-screen max-w-md flex-col px-5">
+                <header className="pt-6 pb-4">
+                    <Logo />
+                </header>
+
                 {ownerState === "missing" ? (
-                    <section className="mt-16">
+                    <section className="mt-8">
                         <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-surface text-muted">
                             <TriangleAlert className="h-5 w-5" strokeWidth={1.75} />
                         </span>
@@ -117,7 +122,7 @@ export default function VisitorPage() {
                     </section>
                 ) : (
                     <>
-                        <section className="mt-4">
+                        <section className="mt-2">
                             <p className="mt-5 text-sm text-muted">You&apos;re contacting</p>
                             {ownerState === "loading" ? (
                                 <div className="mt-1.5">
