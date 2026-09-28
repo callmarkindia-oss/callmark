@@ -235,7 +235,7 @@ export default function VisitorPage() {
                     </>
                 )}
 
-                <footer className="mt-auto pt-8 text-center text-xs text-muted-light">
+                <footer className="pt-8 text-center text-xs text-muted-light">
                     Delivered securely through CallMark
                 </footer>
             </div>
