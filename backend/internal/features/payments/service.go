@@ -4,26 +4,51 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"time"
+
+	authModule "github.com/callmarkindia/callmark/internal/features/auth"
+	hashing "github.com/callmarkindia/callmark/pkg/hashing"
 )
 
 type Service interface {
-	CreateRenewalOrder(ctx context.Context, tagID, userID string) (*CreateOrderResponse, error)
-	VerifyAndActivate(ctx context.Context, tagID, userID, orderID, paymentID, signature string) (time.Time, error)
+	CreateRenewalOrder(ctx context.Context, tagID, token string) (*CreateOrderResponse, error)
+	VerifyAndActivate(ctx context.Context, tagID, token, orderID, paymentID, signature string) (time.Time, error)
 	ActivateFromWebhook(ctx context.Context, orderID, paymentID string) error
 	VerifyWebhookSignature(body []byte, signature string) bool
 }
 
 type service struct {
-	repo   Repository
-	client RazorpayClient
+	repo       Repository
+	client     RazorpayClient
+	authModule authModule.Repository
 }
 
-func NewService(repo Repository, client RazorpayClient) Service {
-	return &service{repo: repo, client: client}
+func NewService(repo Repository, client RazorpayClient, authModule authModule.Repository) Service {
+	return &service{
+		repo:       repo,
+		client:     client,
+		authModule: authModule,
+	}
 }
 
-func (srv *service) CreateRenewalOrder(ctx context.Context, tagID, userID string) (*CreateOrderResponse, error) {
+func (srv *service) userIDFromToken(ctx context.Context, token string) (string, error) {
+	sessionTokenHash := hashing.NewAlgo().CreateSHA(token)
+
+	user, err := srv.authModule.ME(ctx, sessionTokenHash)
+	if err != nil {
+		return "", errors.New("unauthorized")
+	}
+
+	return user.User.ID, nil
+}
+
+func (srv *service) CreateRenewalOrder(ctx context.Context, tagID, token string) (*CreateOrderResponse, error) {
+	userID, err := srv.userIDFromToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+
 	owns, err := srv.repo.TagOwnedByUser(ctx, tagID, userID)
 	if err != nil {
 		return nil, err
@@ -54,13 +79,20 @@ func (srv *service) CreateRenewalOrder(ctx context.Context, tagID, userID string
 		OrderID:  orderID,
 		Amount:   RenewalAmountPaise,
 		Currency: RenewalCurrency,
+		KeyID:    os.Getenv("RAZORPAY_KEY_ID"),
 	}, nil
 }
 
-func (srv *service) VerifyAndActivate(ctx context.Context, tagID, userID, orderID, paymentID, signature string) (time.Time, error) {
+func (srv *service) VerifyAndActivate(ctx context.Context, tagID, token, orderID, paymentID, signature string) (time.Time, error) {
+	userID, err := srv.userIDFromToken(ctx, token)
+	if err != nil {
+		return time.Time{}, err
+	}
+
 	if !srv.client.VerifySignature(orderID, paymentID, signature) {
 		return time.Time{}, errors.New("signature verification failed")
 	}
+
 	return srv.markPaidAndActivate(ctx, tagID, userID, orderID, paymentID, signature)
 }
 

@@ -136,6 +136,7 @@ export default function Tags() {
                             status={tag.is_active ? "active" : "expired"}
                             page="tag"
                             code={tag.tag_token}
+                            tagId={tag.id}
                         />
                     ))
                 ) : (

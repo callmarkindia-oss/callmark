@@ -61,6 +61,7 @@ export default function Activations() {
                             status="expired"
                             page="activation"
                             code={tag.tag_token}
+                            tagId={tag.id}
                         />
                     ))
                 ) : (

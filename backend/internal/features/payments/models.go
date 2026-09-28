@@ -11,7 +11,7 @@ const (
 )
 
 const (
-	RenewalAmountPaise = 9900
+	RenewalAmountPaise = 99
 	RenewalCurrency    = "INR"
 	RenewalValidity    = 365 * 24 * time.Hour
 )
@@ -47,7 +47,6 @@ type CreateOrderResponse struct {
 }
 
 type VerifyPaymentRequest struct {
-	TagID             string `json:"tag_id" binding:"required"`
 	RazorpayOrderID   string `json:"razorpay_order_id" binding:"required"`
 	RazorpayPaymentID string `json:"razorpay_payment_id" binding:"required"`
 	RazorpaySignature string `json:"razorpay_signature" binding:"required"`

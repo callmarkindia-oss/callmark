@@ -1,7 +1,7 @@
 package payments
 
 import (
-	"errors"
+	"encoding/json"
 	"io"
 	"net/http"
 
@@ -22,10 +22,19 @@ func NewHandler(srv Service) *handler {
 var response = formatter.NewRepository()
 
 func (hdlr *handler) CreateOrder(c *gin.Context) {
-	userID := c.GetString("user_id")
+	token, err := c.Cookie("session_token")
+	if err != nil {
+		response.Error(
+			c.Writer,
+			false,
+			http.StatusUnauthorized,
+			"Session not found",
+		)
+		return
+	}
 
-	var req CreateOrderRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	tagID := c.Param("id")
+	if tagID == "" {
 		response.Error(
 			c.Writer,
 			false,
@@ -35,24 +44,31 @@ func (hdlr *handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	result, err := hdlr.srv.CreateRenewalOrder(c.Request.Context(), req.TagID, userID)
+	result, err := hdlr.srv.CreateRenewalOrder(c.Request.Context(), tagID, token)
 	if err != nil {
-		if errors.Is(err, errors.New("tag not found or not owned by user")) {
+		switch err.Error() {
+		case "unauthorized":
+			response.Error(
+				c.Writer,
+				false,
+				http.StatusUnauthorized,
+				"Invalid session",
+			)
+		case "tag not found or not owned by user":
 			response.Error(
 				c.Writer,
 				false,
 				http.StatusNotFound,
 				"Tag not found",
 			)
-			return
+		default:
+			response.Error(
+				c.Writer,
+				false,
+				http.StatusInternalServerError,
+				"Failed to create order"+err.Error(),
+			)
 		}
-
-		response.Error(
-			c.Writer,
-			false,
-			http.StatusInternalServerError,
-			"Failed to create order",
-		)
 		return
 	}
 
@@ -66,7 +82,18 @@ func (hdlr *handler) CreateOrder(c *gin.Context) {
 }
 
 func (hdlr *handler) VerifyPayment(c *gin.Context) {
-	userID := c.GetString("user_id")
+	token, err := c.Cookie("session_token")
+	if err != nil {
+		response.Error(
+			c.Writer,
+			false,
+			http.StatusUnauthorized,
+			"Session not found",
+		)
+		return
+	}
+
+	tagID := c.Param("id")
 
 	var req VerifyPaymentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -81,22 +108,29 @@ func (hdlr *handler) VerifyPayment(c *gin.Context) {
 
 	expiry, err := hdlr.srv.VerifyAndActivate(
 		c.Request.Context(),
-		req.TagID,
-		userID,
+		tagID,
+		token,
 		req.RazorpayOrderID,
 		req.RazorpayPaymentID,
 		req.RazorpaySignature,
 	)
 	if err != nil {
-		switch {
-		case errors.Is(err, errors.New("signature verification failed")):
+		switch err.Error() {
+		case "unauthorized":
+			response.Error(
+				c.Writer,
+				false,
+				http.StatusUnauthorized,
+				"Invalid session",
+			)
+		case "signature verification failed":
 			response.Error(
 				c.Writer,
 				false,
 				http.StatusBadRequest,
 				"Signature verification failed",
 			)
-		case errors.Is(err, errors.New("payment already processed")):
+		case "payment already processed":
 			response.Error(
 				c.Writer,
 				false,
@@ -150,7 +184,7 @@ func (hdlr *handler) Webhook(c *gin.Context) {
 	}
 
 	var evt WebhookPayload
-	if err := c.ShouldBindJSON(&evt); err != nil {
+	if err := json.Unmarshal(body, &evt); err != nil {
 		response.Error(
 			c.Writer,
 			false,
@@ -170,7 +204,7 @@ func (hdlr *handler) Webhook(c *gin.Context) {
 		evt.Payload.Payment.Entity.OrderID,
 		evt.Payload.Payment.Entity.ID,
 	)
-	if err != nil && !errors.Is(err, errors.New("payment already processed")) {
+	if err != nil && err.Error() != "payment already processed" {
 		response.Error(
 			c.Writer,
 			false,

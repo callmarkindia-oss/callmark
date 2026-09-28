@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { QrCode, Copy, Share2, RefreshCw } from "lucide-react";
 import Modal from "@/app/components/shared/Modal";
+import { APIENDPOINT } from "@/config/Backend";
+import { useApiCall } from "@/hooks/useApiCall";
+import { useRazorpayScript } from "@/hooks/useRazorpayScript";
 
 type CodeStatus = "active" | "expired" | "used";
 type PageContext = "tag" | "activation";
 
 type ListProps = {
+    tagId: string;
     name: string;
     description: string;
     status: CodeStatus;
@@ -15,6 +19,7 @@ type ListProps = {
     page: PageContext;
     onCopy?: (code: string) => void;
     onShare?: (code: string) => void;
+    onRenewed?: (tagId: string, expiryAt: string) => void;
 };
 
 const statusStyles: Record<CodeStatus, string> = {
@@ -24,6 +29,7 @@ const statusStyles: Record<CodeStatus, string> = {
 };
 
 export default function List({
+    tagId,
     name,
     description,
     status,
@@ -31,19 +37,96 @@ export default function List({
     page,
     onCopy,
     onShare,
+    onRenewed,
 }: ListProps) {
     const [renewOpen, setRenewOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
-
-    const handleRenewPayment = () => {
-        setProcessing(true);
-        setTimeout(() => {
-            setProcessing(false);
-            setRenewOpen(false);
-        }, 1200);
-    };
+    const [error, setError] = useState<string | null>(null);
+    const { makeApiCall } = useApiCall();
+    const razorpayReady = useRazorpayScript();
 
     const showRenew = page === "activation" && status === "expired";
+
+    const handleRenewPayment = async () => {
+        if (!razorpayReady) {
+            setError("Payment gateway is still loading, try again in a moment.");
+            return;
+        }
+
+        setError(null);
+        setProcessing(true);
+
+        try {
+            const orderRes = await makeApiCall(
+                "POST",
+                APIENDPOINT.CreateRenewalOrder(tagId)
+            );
+
+            if (!orderRes.success) {
+                setError("Could not start payment. Try again.");
+                setProcessing(false);
+                return;
+            }
+
+            const { order_id, amount, currency, key_id } = orderRes.data;
+
+            const rzp = new window.Razorpay({
+                key: key_id,
+                order_id,
+                amount,
+                currency,
+                name: "Tag renewal",
+                description: `Renew "${name}"`,
+                handler: async (paymentResult: {
+                    razorpay_order_id: string;
+                    razorpay_payment_id: string;
+                    razorpay_signature: string;
+                }) => {
+                    try {
+                        const verifyRes = await makeApiCall(
+                            "POST",
+                            APIENDPOINT.VerifyRenewalPayment(tagId),
+                            {
+                                tag_id: tagId,
+                                razorpay_order_id: paymentResult.razorpay_order_id,
+                                razorpay_payment_id: paymentResult.razorpay_payment_id,
+                                razorpay_signature: paymentResult.razorpay_signature,
+                            }
+                        );
+
+                        if (!verifyRes.success) {
+                            setError("Payment verification failed. Contact support if you were charged.");
+                            setProcessing(false);
+                            return;
+                        }
+
+                        onRenewed?.(tagId, verifyRes.data.expiry_at);
+                        setRenewOpen(false);
+                    } catch {
+                        setError("Payment verification failed. Contact support if you were charged.");
+                    } finally {
+                        setProcessing(false);
+                    }
+                },
+                modal: {
+                    ondismiss: () => {
+                        setProcessing(false);
+                    },
+                },
+                theme: { color: "#000000" },
+            });
+
+            rzp.on("payment.failed", () => {
+                setError("Payment failed. Please try again.");
+                setProcessing(false);
+            });
+
+            rzp.open();
+        } catch {
+            setError("Could not start payment. Try again.");
+            setProcessing(false);
+        }
+    };
 
     return (
         <div className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
@@ -99,7 +182,9 @@ export default function List({
 
             <Modal
                 open={renewOpen}
-                onClose={() => setRenewOpen(false)}
+                onClose={() => {
+                    if (!processing) setRenewOpen(false);
+                }}
                 title="Renew tag"
                 description={`Renew "${name}" to reactivate this tag.`}
                 footer={
@@ -107,6 +192,7 @@ export default function List({
                         <button
                             type="button"
                             onClick={() => setRenewOpen(false)}
+                            disabled={processing}
                             className="btn btn-outline"
                         >
                             Cancel
@@ -126,6 +212,7 @@ export default function List({
                     <p className="text-sm text-muted">
                         Renewing this tag will extend its validity
                     </p>
+                    {error && <p className="text-sm text-red-600">{error}</p>}
                 </div>
             </Modal>
         </div>

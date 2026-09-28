@@ -73,7 +73,7 @@ func (app *application) mount() *gin.Engine {
 		authModule.NewRouter(app.db),
 		tagModule.NewRouter(app.db, app.authModule),
 		visitorModule.NewRouter(app.db),
-		paymentModule.NewRouter(app.db),
+		paymentModule.NewRouter(app.db, app.authModule),
 	}
 
 	for _, m := range modules {

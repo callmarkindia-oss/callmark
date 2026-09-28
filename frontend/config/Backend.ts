@@ -24,4 +24,9 @@ export const APIENDPOINT = {
 
   GetVisitorCallToken: (tagToken: string) =>
     `${baseUrl}/api/v1/visitors/call/token/${tagToken}`,
+
+  CreateRenewalOrder: (tagId: string) =>
+    `${baseUrl}/api/v1/payments/tags/${tagId}/renew/order`,
+  VerifyRenewalPayment: (tagId: string) =>
+    `${baseUrl}/api/v1/payments/tags/${tagId}/renew/verify`,
 };
