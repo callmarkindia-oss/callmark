@@ -41,7 +41,7 @@ export default function Home() {
           <Link
             href="/notifications"
             aria-label="Notifications"
-            className="btn btn-ghost h-10 w-10 !p-0 rounded-full border border-border"
+            className="btn btn-ghost h-10 w-10 !p-0 rounded-full border border-border bg-surface text-primary"
           >
             <Bell className="h-5 w-5" strokeWidth={1.75} />
           </Link>
@@ -49,14 +49,14 @@ export default function Home() {
 
         <Link
           href="/activate"
-          className="group relative flex items-center justify-between gap-3 rounded-2xl bg-primary/20 py-5 pl-5 pr-2 text-primary-foreground transition-colors hover:bg-primary-hover"
+          className="group relative flex items-center justify-between gap-3 overflow-hidden rounded-2xl bg-primary py-5 pl-5 pr-2 text-primary-foreground transition-colors hover:bg-primary-hover"
         >
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-primary-foreground/70">
               New tag in hand?
             </p>
             <p className="mt-1 text-2xl font-bold leading-snug">Activate your tag</p>
-            <p className="mt-1 text-md text-primary-foreground/70">
+            <p className="mt-1 text-base text-primary-foreground/80">
               Scan, verify, done in two minutes.
             </p>
             <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium">
@@ -79,21 +79,21 @@ export default function Home() {
             href="/scan"
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface py-4 text-sm font-medium transition-colors hover:bg-accent"
           >
-            <QrCode className="h-5 w-5" strokeWidth={1.75} />
+            <QrCode className="h-5 w-5 text-primary" strokeWidth={1.75} />
             Scan QR
           </Link>
           <Link
             href="/shop"
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface py-4 text-sm font-medium transition-colors hover:bg-accent"
           >
-            <Store className="h-5 w-5" strokeWidth={1.75} />
+            <Store className="h-5 w-5 text-primary" strokeWidth={1.75} />
             Shop Tags
           </Link>
           <Link
             href="/how-it-works"
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface py-4 text-sm font-medium transition-colors hover:bg-accent"
           >
-            <Compass className="h-5 w-5" strokeWidth={1.75} />
+            <Compass className="h-5 w-5 text-primary" strokeWidth={1.75} />
             How It Works
           </Link>
         </div>
@@ -101,7 +101,7 @@ export default function Home() {
         <section>
           <div className="mb-3 flex items-baseline justify-between">
             <h2 className="text-base font-semibold">Popular tags</h2>
-            <Link href="/shop" className="text-sm text-muted hover:text-foreground">
+            <Link href="/shop" className="text-sm font-medium text-primary hover:text-primary-hover">
               See all
             </Link>
           </div>
@@ -112,7 +112,7 @@ export default function Home() {
                 href="/shop"
                 className="flex w-44 shrink-0 flex-col gap-3 rounded-xl border border-border bg-surface p-4 transition-colors hover:bg-accent"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-primary">
                   <Tag className="h-4.5 w-4.5" strokeWidth={1.75} />
                 </span>
                 <div>
@@ -130,19 +130,19 @@ export default function Home() {
             className="flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-3.5 transition-colors hover:bg-accent"
           >
             <span className="text-sm font-medium">My Tags</span>
-            <Tag className="h-4 w-4 text-muted" strokeWidth={1.75} />
+            <Tag className="h-4 w-4 text-primary" strokeWidth={1.75} />
           </Link>
           <Link
             href="/my-orders"
             className="flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-3.5 transition-colors hover:bg-accent"
           >
             <span className="text-sm font-medium">My Orders</span>
-            <Package className="h-4 w-4 text-muted" strokeWidth={1.75} />
+            <Package className="h-4 w-4 text-primary" strokeWidth={1.75} />
           </Link>
         </section>
 
-        <section className="flex items-start gap-3 rounded-xl bg-secondary px-4 py-4">
-          <Shield className="mt-0.5 h-5 w-5 shrink-0 text-muted" strokeWidth={1.75} />
+        <section className="flex items-start gap-3 rounded-xl border border-border bg-secondary px-4 py-4">
+          <Shield className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.75} />
           <p className="text-sm leading-snug text-secondary-foreground">
             Your number stays private. Anyone who scans your tag can call or message you
             without ever seeing it.

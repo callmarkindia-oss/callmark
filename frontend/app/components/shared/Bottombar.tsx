@@ -6,10 +6,10 @@ export default function BottomBar({ children }: { children: React.ReactNode }) {
             <div
                 className="
                     mx-auto max-w-md
-                    bg-surface/80
+                    bg-surface/90
                     backdrop-blur-lg
                     border-t border-border
-                    shadow-lg
+                    shadow-[0_-4px_20px_rgba(11,18,32,0.08)]
                     rounded-tr-3xl
                     rounded-tl-3xl
                     px-6 py-3

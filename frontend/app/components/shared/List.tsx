@@ -23,8 +23,8 @@ type ListProps = {
 };
 
 const statusStyles: Record<CodeStatus, string> = {
-    active: "bg-primary/10 text-primary",
-    expired: "bg-secondary text-muted",
+    active: "bg-success/15 text-[#178A38]",
+    expired: "bg-danger/10 text-danger",
     used: "bg-accent text-accent-foreground",
 };
 
@@ -113,7 +113,7 @@ export default function List({
                         setProcessing(false);
                     },
                 },
-                theme: { color: "#000000" },
+                theme: { color: "#0A5CFF" },
             });
 
             rzp.on("payment.failed", () => {
@@ -131,7 +131,7 @@ export default function List({
     return (
         <div className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-secondary">
-                <QrCode size={20} className="text-foreground" />
+                <QrCode size={20} className="text-primary" />
             </div>
 
             <div className="min-w-0 flex-1">
@@ -164,7 +164,7 @@ export default function List({
                             type="button"
                             aria-label="Copy code"
                             onClick={() => onCopy?.(code)}
-                            className="btn btn-ghost !p-2"
+                            className="btn btn-ghost !p-2 text-muted hover:text-accent-foreground"
                         >
                             <Copy size={18} />
                         </button>
@@ -172,7 +172,7 @@ export default function List({
                             type="button"
                             aria-label="Share"
                             onClick={() => onShare?.(code)}
-                            className="btn btn-ghost !p-2"
+                            className="btn btn-ghost !p-2 text-muted hover:text-accent-foreground"
                         >
                             <Share2 size={18} />
                         </button>
@@ -212,7 +212,7 @@ export default function List({
                     <p className="text-sm text-muted">
                         Renewing this tag will extend its validity
                     </p>
-                    {error && <p className="text-sm text-red-600">{error}</p>}
+                    {error && <p className="text-sm text-danger">{error}</p>}
                 </div>
             </Modal>
         </div>
