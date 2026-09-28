@@ -14,6 +14,7 @@ type ModalProps = {
 
 const CLOSE_DRAG_THRESHOLD = 120;
 const CLOSE_VELOCITY_THRESHOLD = 0.5;
+const BACKDROP_OPACITY = 0.75;
 
 export default function Modal({
     open,
@@ -111,10 +112,10 @@ export default function Modal({
 
     return createPortal(
         <div
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center sm:p-4"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-sm sm:items-center sm:p-4"
             style={{
                 backgroundColor: dragging
-                    ? `rgba(0,0,0,${0.5 * (1 - Math.min(dragY / 300, 1))})`
+                    ? `rgba(0,0,0,${BACKDROP_OPACITY * (1 - Math.min(dragY / 300, 1))})`
                     : undefined,
             }}
             onMouseDown={(e) => {
@@ -127,9 +128,9 @@ export default function Modal({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={title ? "modal-title" : undefined}
-                className="w-full max-w-md rounded-t-2xl border-t border-border bg-surface p-5 shadow-xl sm:rounded-2xl touch-none"
+                className="w-full max-w-md touch-none rounded-t-3xl border border-b-0 border-border bg-surface px-5 pt-3 shadow-2xl shadow-black sm:rounded-3xl sm:border-b"
                 style={{
-                    paddingBottom: "env(safe-area-inset-bottom, 1.25rem)",
+                    paddingBottom: "max(env(safe-area-inset-bottom, 0px), 1.25rem)",
                     transform: `translateY(${dragY}px)`,
                     transition: dragging ? "none" : "transform 0.25s ease-out",
                 }}
@@ -138,31 +139,32 @@ export default function Modal({
                 onPointerUp={endDrag}
                 onPointerCancel={endDrag}
             >
-                <div className="flex items-center justify-center mb-4 cursor-grab active:cursor-grabbing">
-                    <div className="bg-muted w-20 h-1 rounded-full" />
+                <div className="mb-4 flex cursor-grab items-center justify-center py-1 active:cursor-grabbing sm:hidden">
+                    <div className="h-1 w-10 rounded-full bg-secondary-hover" />
                 </div>
+
                 {(title || description) && (
-                    <div className="mb-4 flex items-start justify-between gap-3">
-                        <div>
-                            {title && (
-                                <h2
-                                    id="modal-title"
-                                    className="text-base font-semibold text-foreground"
-                                >
-                                    {title}
-                                </h2>
-                            )}
-                            {description && (
-                                <p className="mt-1 text-sm text-muted">{description}</p>
-                            )}
-                        </div>
+                    <div className="mb-4 sm:mt-2">
+                        {title && (
+                            <h2
+                                id="modal-title"
+                                className="text-lg font-semibold tracking-tight text-foreground"
+                            >
+                                {title}
+                            </h2>
+                        )}
+                        {description && (
+                            <p className="mt-1 text-sm leading-relaxed text-muted">
+                                {description}
+                            </p>
+                        )}
                     </div>
                 )}
 
                 <div className="text-sm text-foreground">{children}</div>
 
                 {footer && (
-                    <div className="mt-5 flex items-center justify-end gap-2 border-t border-border pt-4 pb-2">
+                    <div className="mt-2 flex items-center justify-end gap-2 border-t border-border pt-4">
                         {footer}
                     </div>
                 )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { QrCode, Copy, Share2, RefreshCw } from "lucide-react";
+import { QrCode, Copy, Share2, RefreshCw, Loader2 } from "lucide-react";
 import Modal from "@/app/components/shared/Modal";
 import { APIENDPOINT } from "@/config/Backend";
 import { useApiCall } from "@/hooks/useApiCall";
@@ -22,10 +22,10 @@ type ListProps = {
     onRenewed?: (tagId: string, expiryAt: string) => void;
 };
 
-const statusStyles: Record<CodeStatus, string> = {
-    active: "bg-success/15 text-[#178A38]",
-    expired: "bg-danger/10 text-danger",
-    used: "bg-accent text-accent-foreground",
+const statusText: Record<CodeStatus, string> = {
+    active: "text-success",
+    expired: "text-danger",
+    used: "text-muted",
 };
 
 export default function List({
@@ -113,7 +113,7 @@ export default function List({
                         setProcessing(false);
                     },
                 },
-                theme: { color: "#0A5CFF" },
+                theme: { color: "#FACC15" },
             });
 
             rzp.on("payment.failed", () => {
@@ -128,34 +128,43 @@ export default function List({
         }
     };
 
+    const iconButton =
+        "flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors " +
+        "hover:bg-secondary hover:text-foreground";
+
     return (
-        <div className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-secondary">
-                <QrCode size={20} className="text-primary" />
+        <div className="flex items-center gap-3.5 rounded-2xl bg-surface px-4 py-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary">
+                <QrCode
+                    size={20}
+                    strokeWidth={1.75}
+                    className={status === "expired" ? "text-muted-light" : "text-primary"}
+                />
             </div>
 
             <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                    <p className="truncate text-sm font-medium text-foreground">
-                        {name}
-                    </p>
-                    <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusStyles[status]}`}
-                    >
+                <p className="truncate text-[15px] font-medium leading-tight text-foreground">
+                    {name}
+                </p>
+                <p className="mt-1 flex items-center gap-1.5 truncate text-[13px] leading-tight text-muted">
+                    <span className="truncate">{description}</span>
+                    <span aria-hidden className="text-muted-light">
+                        ·
+                    </span>
+                    <span className={`shrink-0 font-medium capitalize ${statusText[status]}`}>
                         {status}
                     </span>
-                </div>
-                <p className="truncate text-sm text-muted">{description}</p>
+                </p>
             </div>
 
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="flex shrink-0 items-center">
                 {showRenew ? (
                     <button
                         type="button"
                         onClick={() => setRenewOpen(true)}
-                        className="btn btn-primary h-8 gap-1.5 px-2.5 text-xs"
+                        className="btn btn-primary h-9 gap-1.5 rounded-full px-4 text-[13px] font-semibold"
                     >
-                        <RefreshCw size={14} strokeWidth={2} />
+                        <RefreshCw size={14} strokeWidth={2.25} />
                         Renew
                     </button>
                 ) : (
@@ -164,17 +173,17 @@ export default function List({
                             type="button"
                             aria-label="Copy code"
                             onClick={() => onCopy?.(code)}
-                            className="btn btn-ghost !p-2 text-muted hover:text-accent-foreground"
+                            className={iconButton}
                         >
-                            <Copy size={18} />
+                            <Copy size={17} strokeWidth={1.75} />
                         </button>
                         <button
                             type="button"
                             aria-label="Share"
                             onClick={() => onShare?.(code)}
-                            className="btn btn-ghost !p-2 text-muted hover:text-accent-foreground"
+                            className={iconButton}
                         >
-                            <Share2 size={18} />
+                            <Share2 size={17} strokeWidth={1.75} />
                         </button>
                     </>
                 )}
@@ -188,12 +197,12 @@ export default function List({
                 title="Renew tag"
                 description={`Renew "${name}" to reactivate this tag.`}
                 footer={
-                    <div className="pb-3 flex gap-3">
+                    <div className="flex gap-3 pb-3">
                         <button
                             type="button"
                             onClick={() => setRenewOpen(false)}
                             disabled={processing}
-                            className="btn btn-outline"
+                            className="btn btn-secondary"
                         >
                             Cancel
                         </button>
@@ -201,18 +210,29 @@ export default function List({
                             type="button"
                             onClick={handleRenewPayment}
                             disabled={processing}
-                            className="btn btn-primary"
+                            className="btn btn-primary min-w-32 font-semibold"
                         >
-                            {processing ? "Processing..." : "Pay & Renew"}
+                            {processing ? (
+                                <>
+                                    <Loader2 size={16} className="animate-spin" />
+                                    Processing
+                                </>
+                            ) : (
+                                "Pay & Renew"
+                            )}
                         </button>
                     </div>
                 }
             >
                 <div className="space-y-2 pb-6">
                     <p className="text-sm text-muted">
-                        Renewing this tag will extend its validity
+                        Renewing this tag will extend its validity.
                     </p>
-                    {error && <p className="text-sm text-danger">{error}</p>}
+                    {error && (
+                        <p role="alert" className="text-sm text-danger">
+                            {error}
+                        </p>
+                    )}
                 </div>
             </Modal>
         </div>

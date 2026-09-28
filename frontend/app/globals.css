@@ -1,38 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --background: #f5f8ff;
-  --surface: #ffffff;
+  --background: #000000;
+  --surface: #111111;
 
-  --foreground: #0b1220;
-  --muted: #5b6472;
-  --muted-light: #8a94a6;
+  --foreground: #fafafa;
+  --muted: #a3a3a3;
+  --muted-light: #737373;
 
-  --border: #e3eaf5;
+  --border: #262626;
 
-  --primary: #0a5cff;
-  --primary-hover: #0846c7;
-  --primary-foreground: #ffffff;
+  --primary: #facc15;
+  --primary-hover: #fde047;
+  --primary-foreground: #000000;
+  --primary-text: #facc15;
 
-  --secondary: #eaf2ff;
-  --secondary-hover: #dce9ff;
-  --secondary-foreground: #0b1220;
+  --secondary: #1f1f1f;
+  --secondary-hover: #2e2e2e;
+  --secondary-foreground: #fafafa;
 
-  --accent: #eaf2ff;
-  --accent-foreground: #0846c7;
+  --accent: #1f1f1f;
+  --accent-foreground: #facc15;
 
-  --success: #22b14c;
-  --success-foreground: #ffffff;
+  --success: #22c55e;
+  --success-foreground: #000000;
 
-  --danger: #e5383b;
+  --danger: #ef4444;
   --danger-foreground: #ffffff;
 
-  --navy: #0b1220;
-  --navy-end: #1a2438;
+  --ink: #000000;
+  --ink-end: #1a1a1a;
 
-  --ring: #0a5cff;
+  --ring: #facc15;
 }
 
 @theme inline {
@@ -46,6 +47,7 @@
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-text: var(--primary-text);
 
   --color-secondary: var(--secondary);
   --color-secondary-hover: var(--secondary-hover);
@@ -60,8 +62,8 @@
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
 
-  --color-navy: var(--navy);
-  --color-navy-end: var(--navy-end);
+  --color-ink: var(--ink);
+  --color-ink-end: var(--ink-end);
 
   --color-ring: var(--ring);
 
@@ -85,8 +87,8 @@
   }
 
   ::selection {
-    background: var(--secondary-hover);
-    color: var(--foreground);
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
@@ -146,7 +148,7 @@ body {
   .btn-outline {
     background-color: transparent;
     border-color: var(--primary);
-    color: var(--primary);
+    color: var(--primary-text);
   }
 
   .btn-outline:hover:not(:disabled) {

@@ -65,7 +65,7 @@ export default function Home() {
             </span>
           </div>
           <Image
-            src="/3d_qr_light.png"
+            src="/3d_qr.png"
             alt=""
             aria-hidden
             width={500}
