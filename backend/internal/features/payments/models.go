@@ -11,7 +11,7 @@ const (
 )
 
 const (
-	RenewalAmountPaise = 99
+	RenewalAmountPaise = 9900
 	RenewalCurrency    = "INR"
 	RenewalValidity    = 365 * 24 * time.Hour
 )
