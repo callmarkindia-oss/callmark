@@ -11,8 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 
 	authModule "github.com/callmarkindia/callmark/internal/features/auth"
+	paymentModule "github.com/callmarkindia/callmark/internal/features/payments"
 	tagModule "github.com/callmarkindia/callmark/internal/features/tag"
 	visitorModule "github.com/callmarkindia/callmark/internal/features/visitor"
+
 	routers "github.com/callmarkindia/callmark/internal/interfaces"
 )
 
@@ -71,6 +73,7 @@ func (app *application) mount() *gin.Engine {
 		authModule.NewRouter(app.db),
 		tagModule.NewRouter(app.db, app.authModule),
 		visitorModule.NewRouter(app.db),
+		paymentModule.NewRouter(app.db),
 	}
 
 	for _, m := range modules {
