@@ -27,7 +27,6 @@ func NewRazorpayClient() RazorpayClient {
 	keyID := os.Getenv("RAZORPAY_KEY_ID")
 	keySecret := os.Getenv("RAZORPAY_KEY_SECRET")
 	webhookSecret := os.Getenv("RAZORPAY_WEBHOOK_SECRET")
-	fmt.Printf("key_id=%q secret_len=%d\n", keyID, len(keySecret))
 
 	return &razorpayClient{
 		client:        razorpay.NewClient(keyID, keySecret),
