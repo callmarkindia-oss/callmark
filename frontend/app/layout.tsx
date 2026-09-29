@@ -30,13 +30,27 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           position="bottom-center"
           reverseOrder={false}
           gutter={8}
-
           toastOptions={{
+            duration: 3500,
+            className: "!bg-surface !text-foreground !border !border-border !rounded-xl !text-sm !shadow-lg",
             success: {
               duration: 3000,
               iconTheme: {
-                primary: 'green',
-                secondary: 'black',
+                primary: "#22c55e",
+                secondary: "#0a0a0a",
+              },
+            },
+            error: {
+              duration: 4000,
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "#0a0a0a",
+              },
+            },
+            loading: {
+              iconTheme: {
+                primary: "#a1a1aa",
+                secondary: "#0a0a0a",
               },
             },
           }}
